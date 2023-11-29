@@ -1,9 +1,9 @@
 import { Schema, model } from 'mongoose'
-import { TUser } from './user/user.interface'
+import { TUser, UserExisting } from './user/user.interface'
 import config from '../config'
 const bcrypt = require('bcrypt')
 
-const UserShema = new Schema<TUser>({
+const UserSchema = new Schema<TUser, UserExisting>({
   userId: { type: Number, unique: true },
   username: {
     type: String,
@@ -28,7 +28,11 @@ const UserShema = new Schema<TUser>({
     type: Boolean,
     default: false,
   },
-  hobbies: ['Cooding', 'Traveling', 'Writting'],
+  hobbies: [
+    {
+      type: String,
+    },
+  ],
   address: {
     street: String,
     city: String,
@@ -47,16 +51,45 @@ const UserShema = new Schema<TUser>({
       },
     },
   ],
+  isDeleted: {
+    type: Boolean,
+    default: false,
+  },
 })
 
-UserShema.pre('save', async function (next) {
+// pre middle ware of the hashed password
+UserSchema.pre('save', async function (next) {
   this.password = await bcrypt.hash(this.password, Number(config.bcrypt_salt))
   next()
 })
 
-UserShema.post('save', function (doc, next) {
+// post middleWare of empty password
+UserSchema.post('save', function (doc, next) {
   doc.password = ''
   next()
 })
 
-export const UserModel = model<TUser>('user', UserShema)
+// post middleWare of find or findOneAndUpdate password hashed
+UserSchema.post(
+  ['findOneAndUpdate', 'findOne'],
+  async function (doc: TUser, next) {
+    if (doc) {
+      doc.password = ''
+    }
+    next()
+  },
+)
+
+// is deleted middle ware
+UserSchema.pre('find', function (next) {
+  this.find({ isDeleted: { $ne: true } })
+  next()
+})
+
+// custom static method for existing user check
+UserSchema.statics.isUserExist = async function (userId: number) {
+  const existingUser = await UserModel.findOne({ userId })
+  return existingUser
+}
+
+export const UserModel = model<TUser, UserExisting>('user', UserSchema)
