@@ -9,13 +9,20 @@
   7.  prettier:fix-  this srcipt for unbeautify code transform beautify 
 
 
- "scripts": {
+ "scripts":-- 
+
     "start:prod": "node ./dist/server.js", 
+    
     "start:dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    
     "build": "tsc",
+    
     "lint": "eslint --ignore-path .eslintignore --ext .ts",
+    
     "lint:fix": "npx eslint src --fix",
+    
     "test": "echo \"Error: no test specified\" && exit 1",
+    
     "prettier": "prettier --ignore-path .gitignore --write \"./src/**/*.+(js|ts|json)\"",
+    
     "prettier:fix": "npx prettier ---write src"
-  },
