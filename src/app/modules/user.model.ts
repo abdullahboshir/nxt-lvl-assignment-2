@@ -59,7 +59,7 @@ const UserSchema = new Schema<TUser, UserExisting>({
 
 // pre middle ware of the hashed password
 UserSchema.pre('save', async function (next) {
-  this.password = await bcrypt.hash(this.password, Number(config.bcrypt_salt))
+  this.password = await bcrypt.hash(this.password, 12)
   next()
 })
 
