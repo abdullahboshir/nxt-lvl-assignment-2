@@ -9,6 +9,9 @@
   7.  prettier:fix-  this srcipt for unbeautify code transform beautify 
 
 
+total 7 datas. there are userId are 1 to 7- 1,2,3,4,5,6,7
+
+
  "scripts":-- 
 
     "start:prod": "node ./dist/server.js", 
