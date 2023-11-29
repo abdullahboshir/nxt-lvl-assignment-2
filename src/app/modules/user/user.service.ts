@@ -118,8 +118,5 @@ export const getOrdersService = async (userId: string) => {
     throw new Error('User not found')
   }
 
-  if (!userRes.orders === undefined || userRes.orders.length === 0) {
-    throw new Error('You have no any orders, Please create a new order')
-  }
   return userRes?.orders
 }
